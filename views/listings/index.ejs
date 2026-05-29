@@ -1,49 +1,45 @@
-
 <% layout("/layouts/boilerplate") %>
 
-<h3>All Listings</h3>
+    <h3>All Listings</h3>
 
-<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
 
-    <% for(let list of allListings){ %>
+        <% for(let list of allListings){ %>
 
-        <div class="col mb-4">
+            <div class="col mb-4">
 
-            <a href="/listings/<%= list._id %>" class="listing-link">
+                <a href="/listings/<%= list._id %>" class="listing-link">
 
-                <div class="card h-100">
+                    <div class="card h-100">
 
-                    <img 
-                    src="<%= typeof list.image === 'string' ? list.image : list.image.url %>" 
-                    class="card-img-top"
-                    alt="listing_image"
-                    style="height:20rem; object-fit:cover;">
+                        <img src="<%= typeof list.image === 'string' ? list.image : list.image.url %>"
+                            class="card-img-top" alt="listing_image" style="height:20rem; object-fit:cover;">
 
-                    <div class="card-img-overlay"></div>
+                        <div class="card-img-overlay"></div>
 
-                    <div class="card-body">
+                        <div class="card-body">
 
-                        <h5 class="card-title">
-                            <b><%= list.title %></b>
-                        </h5>
+                            <h5 class="card-title">
+                                <b>
+                                    <%= list.title %>
+                                </b>
+                            </h5>
 
-                        <p class="card-text">
-                            ₹ <%= list.price.toLocaleString("en-IN") %> / night
-                        </p>
+                            <p class="card-text">
+                                ₹ <%= list.price?.toLocaleString("en-IN") || "0" %> / night
+                            </p>
+                        </div>
 
                     </div>
 
-                </div>
+                </a>
 
-            </a>
+            </div>
 
-        </div>
+            <% } %>
 
-    <% } %>
+    </div>
 
-</div>
-
-<form method="GET" action="/listings/new">
-    <button>Create New Listing</button>
-</form>
-
+    <form method="GET" action="/listings/new">
+        <button>Create New Listing</button>
+    </form>
