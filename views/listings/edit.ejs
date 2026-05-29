@@ -3,7 +3,8 @@
 
 <h3>Edit edit_Listing</h3>
 
-<form method="POST" action="/edit_listings/<%= edit_listing._id %>?_method=PUT">
+<form method="POST" action="/edit_listings/<%= edit_listing._id %>?_method=PUT"
+novalidate class="needs-validation">
 
     <div class="mb-3">
 
@@ -13,7 +14,10 @@
         type="text"
         name="new_edit_listing[title]"
         value="<%= edit_listing.title %>"
-        class="form-control">
+        class="form-control"
+        required
+        >
+        <div class="valid-feedback">Title looks good</div>
 
     </div>
 
@@ -22,9 +26,9 @@
         <label class="form-label">Description</label>
 
         <textarea
-        name="new_edit_listing[description]"
+        name="new_edit_listing[description]"  required
         class="form-control"><%= edit_listing.description %></textarea>
-
+        <div class="valid-feedback">Added Description</div>
     </div>
 
     <div class="mb-3">
@@ -35,8 +39,9 @@
         type="text"
         name="new_edit_listing[image]"
         value="<%= typeof edit_listing.image === 'string' ? edit_listing.image : edit_listing.image.url %>"
-        class="form-control">
-
+        class="form-control"
+         required>
+       <div class="valid-feedback">Added Image</div>
     </div>
 
     <div class="mb-3">
@@ -47,8 +52,10 @@
         type="number"
         name="new_edit_listing[price]"
         value="<%= edit_listing.price %>"
-        class="form-control">
+        class="form-control"
+         required>
 
+         <div class="valid-feedback">Added price</div>
     </div>
 
     <div class="mb-3">
@@ -59,7 +66,9 @@
         type="text"
         name="new_edit_listing[country]"
         value="<%= edit_listing.country %>"
-        class="form-control">
+        class="form-control"
+         required>
+         <div class="valid-feedback">Added country</div>
 
     </div>
 
@@ -69,3 +78,4 @@
 
 </form>
 
+<script src="/js/script.js"></script>

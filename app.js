@@ -162,6 +162,7 @@ app.get("/listings/:id", async (req, res) => {
 
 
 const methodOverride = require("method-override");
+const { id_ID } = require("@faker-js/faker");
 app.use(methodOverride("_method"));
 
 
@@ -193,4 +194,18 @@ app.get("/listings/:id/edit", async (req, res) => {
 
 });
 
+//update route
+
+app.use(methodOverride("_method"));
+app.put("/edit_listings/:id", async (req, res) => {
+    const { id } = req.params;
+
+    await Listing.findByIdAndUpdate(
+        id,
+        req.body.new_edit_listing,
+        { new: true }
+    );
+console.log(req.body);
+    res.redirect(`/listings/${id}`);
+});
 
