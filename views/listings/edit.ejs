@@ -1,0 +1,71 @@
+
+<% layout("/layouts/boilerplate") %>
+
+<h3>Edit edit_Listing</h3>
+
+<form method="POST" action="/edit_listings/<%= edit_listing._id %>?_method=PUT">
+
+    <div class="mb-3">
+
+        <label class="form-label">Title</label>
+
+        <input 
+        type="text"
+        name="new_edit_listing[title]"
+        value="<%= edit_listing.title %>"
+        class="form-control">
+
+    </div>
+
+    <div class="mb-3">
+
+        <label class="form-label">Description</label>
+
+        <textarea
+        name="new_edit_listing[description]"
+        class="form-control"><%= edit_listing.description %></textarea>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label class="form-label">Image</label>
+
+        <input
+        type="text"
+        name="new_edit_listing[image]"
+        value="<%= typeof edit_listing.image === 'string' ? edit_listing.image : edit_listing.image.url %>"
+        class="form-control">
+
+    </div>
+
+    <div class="mb-3">
+
+        <label class="form-label">Price</label>
+
+        <input
+        type="number"
+        name="new_edit_listing[price]"
+        value="<%= edit_listing.price %>"
+        class="form-control">
+
+    </div>
+
+    <div class="mb-3">
+
+        <label class="form-label">Country</label>
+
+        <input
+        type="text"
+        name="new_edit_listing[country]"
+        value="<%= edit_listing.country %>"
+        class="form-control">
+
+    </div>
+
+    <button class="btn btn-dark edit-btn">
+        Update
+    </button>
+
+</form>
+
