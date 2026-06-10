@@ -211,6 +211,7 @@ app.get("/listings/:id/edit", wrapAsync(async (req, res) => {
     const edit_listing = await Listing.findById(id);
 
     res.render("listings/edit.ejs", { edit_listing });
+     
 }));
 
 

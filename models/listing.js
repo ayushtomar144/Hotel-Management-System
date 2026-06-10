@@ -20,6 +20,10 @@ const listingSchema=new Schema({
 },
         location:String,
         country:String,
+        reviews:{
+            type:Schema.Types.ObjectId,
+            ref:"Review",
+        }
 });
 
 const Listing1=mongoose.model("Listing",listingSchema);
