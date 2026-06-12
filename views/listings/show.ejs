@@ -1,50 +1,85 @@
 <% layout("/layouts/boilerplate") %>
 
-<body>
-    <h3><%= Listing_data.title %></h3>
+    <body>
+        <h3>
+            <%= Listing_data.title %>
+        </h3>
 
-    <img 
-        src="<%= typeof Listing_data.image === 'string'
+        <img src="<%= typeof Listing_data.image === 'string'
             ? Listing_data.image
-            : Listing_data.image.url %>"
-        style="width:300px; border-radius:10px;"
-    >
+            : Listing_data.image.url %>" style="width:300px; border-radius:10px;">
 
-    <ul>
-       
-        <li><%= Listing_data.description %></li>
-        <li>&#8377;<%= Listing_data.price.toLocaleString("en-IN") %></li>
-        <li><%= Listing_data.location %></li>
-        <li><%= Listing_data.country %></li>
-    </ul>
+        <ul>
 
-    <br><br>
+            <li>
+                <%= Listing_data.description %>
+            </li>
+            <li>&#8377;<%= Listing_data.price.toLocaleString("en-IN") %>
+            </li>
+            <li>
+                <%= Listing_data.location %>
+            </li>
+            <li>
+                <%= Listing_data.country %>
+            </li>
+        </ul>
 
-    <a href="/listings/<%= Listing_data._id %>/edit">
-        edit this listing
-    </a>
+        <br><br>
 
-    <br><br>
+        <a href="/listings/<%= Listing_data._id %>/edit">
+            edit this listing
+        </a>
 
-    <form method="POST" action="/listings/<%= Listing_data._id %>?_method=DELETE">
-        <button>delete</button>
-    </form>
-<hr>
-    <div>
-        <h4>Add review</h4>
-        <form action="" >
-            <div>
-                <label for="rating" class="form-label">Select Rating</label>
-            <input type="range"class="form-range"
-             min="1" max="5" id="rating" name="review[rating]">
-            </div>
-            <div for="comment">
-                <label for="comment" class="form-label">comments</label>
-                <textarea name="reviewcomment" 
-                class="form-control"
-                id="comment"></textarea>
-            </div>
-            <button class="btn btn-outline-dark">Submit</button>
+        <br><br>
+
+        <form method="POST" action="/listings/<%= Listing_data._id %>?_method=DELETE">
+            <button>delete</button>
         </form>
-    </div>
-</body>
+        <hr>
+        <div>
+            <h4>Add review</h4>
+            <form action="/listings/<%=Listing_data.id%>/review" method="POST" class="needs-validation" novalidate>
+                <div>
+                    <label for="rating" class="form-label">Select Rating</label>
+                    <input type="range" class="form-range" min="1" max="5" id="rating" name="review[rating]">
+                </div>
+                <div for="comment">
+                    <label for="comment" class="form-label">comments</label>
+                    <textarea name="review[comment]" class="form-control" required id="comment"></textarea>
+                </div>
+                <div class="invalid-feedback">
+                    Please enter a comment.
+                </div>
+                <button class="btn btn-outline-dark">Submit</button>
+            </form>
+        </div>
+        <hr>
+        <h4>all reviews</h4>
+        <% for(let review of Listing_data.reviews){ %>
+            <div class="row">
+
+
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body  col-5 ms-2 mb-3 mt-2">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">
+                            <li>
+                                <%= review.comment %>,
+                                    Rating: <%= review.rating %>star
+                            </li>
+                        <p>
+                    </div>
+                <form method="POST"
+action="/listings/<%=Listing_data._id%>/review/<%=review._id%>?_method=DELETE">
+
+    <button class="btn btn-danger btn-sm">
+        Delete
+    </button>
+
+</form>
+                </div>
+            </div>
+            <% } %>
+
+
+    </body>

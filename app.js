@@ -23,6 +23,10 @@ const Listing = require("./models/listing.js");
 // Hamara apna Listing model — MongoDB ki "listings" collection
 // se interact karta hai (schema yahan define hota hai)
 
+const Review = require("./models/reviews.js");
+//hmara apna review model
+
+
 const path = require("path");
 // Node.js ka built-in module — file/folder paths banane ke liye
 
@@ -45,10 +49,16 @@ const ExpressError = require("./utils/ExpressError");
 // statuscode aur message dono saath rakh sakti hai
 // e.g. new ExpressError(404, "Page Not Found")
 
-const { listingSchema } = require("./schema.js");
+const { listingSchema,reviewSchema } = require("./schema.js");
+const reviews = require("./models/reviews.js");
 // Joi validation schema — define karta hai ki req.body ka
 // data kaisa hona chahiye (required fields, types, etc.)
 
+
+const listingRouter =require("./routes/listing.js");
+//express s jo routes bnae unko yaha pr require kr liya
+
+const reviewRouter=require("./routes/review.js");
 
 // -----------------------------------------------
 // STEP 2: MongoDB se connect karna
@@ -91,7 +101,6 @@ app.set("views", path.join(__dirname, "views"));
 // Views folder ka exact path batao — __dirname = current folder
 // path.join safely OS-specific path banata hai
 
-
 // -----------------------------------------------
 // STEP 4: Global Middleware lagana
 // -----------------------------------------------
@@ -110,27 +119,10 @@ app.use(methodOverride("_method"));
 // Express use wo request PUT/DELETE ki tarah treat karega
 
 
-// -----------------------------------------------
-// STEP 5: Validation Middleware banana
-// -----------------------------------------------
+app.use("/listings",listingRouter );
+//y routes wala hai jaha pr bhi listings aayega vaha pr y use kro
 
-const validateListing = (req, res, next) => {
-    // Joi schema se req.body ko validate karo
-    // { error } destructure karke sirf error nikala
-    const { error } = listingSchema.validate(req.body);
-
-    if (error) {
-        // Agar validation fail hui to 400 error throw karo
-        // error.details[0].message = human-readable error message
-        throw new ExpressError(400, error.details[0].message);
-    } else {
-        // Data sahi hai to aage jao (next middleware/route)
-        next();
-    }
-};
-// IMPORTANT: Yeh middleware sirf POST aur PUT routes pe lagao
-// GET routes pe req.body empty hota hai — wahan validate mat karo
-
+app.use("/listings/:id/review",reviewRouter);
 
 // -----------------------------------------------
 // STEP 6: Routes
@@ -154,102 +146,6 @@ app.get("/listings", wrapAsync(async (req, res) => {
     // "listings/index.ejs" render karo, data saath bhejo
     res.render("listings/index.ejs", { allListings });
 }));
-
-
-// --- NEW ROUTE ---
-// GET /listings/new -> nayi listing banana ka form dikhao
-// Koi database call nahi — sirf form render karna hai
-// NOTE: Yeh route /listings/:id se UPAR hona zaroori hai
-// warna Express "new" ko ek :id samajh lega
-app.get("/listings/new", (req, res) => {
-    res.render("listings/new.ejs");
-});
-
-
-// --- CREATE ROUTE ---
-// POST /listings -> form submit hone pe nayi listing save karo
-// validateListing lagaya — POST mein req.body aata hai
-app.post("/listings", validateListing, wrapAsync(async (req, res) => {
-    // req.body.new_listing mein form ka data hota hai
-    // (form ke inputs ka name="new_listing[title]" etc. hona chahiye)
-    const newListing = req.body.new_listing;
-
-    // Mongoose model ka nayi instance banao
-    const new_listing = new Listing(newListing);
-
-    // Database mein save karo — await isliye kyunki async operation hai
-    await new_listing.save();
-
-    console.log("New Listing Saved");
-
-    // Save hone ke baad listings page pe redirect karo
-    res.redirect("/listings");
-}));
-
-
-// --- SHOW ROUTE ---
-// GET /listings/:id -> ek specific listing ki detail dikhao
-// :id = URL mein koi bhi value aa sakti hai (MongoDB ObjectId)
-app.get("/listings/:id", wrapAsync(async (req, res) => {
-    // URL se id nikalo
-    const { id } = req.params;
-
-    // Us id ki listing MongoDB se dhundo
-    const Listing_data = await Listing.findById(id);
-
-    // Detail page render karo
-    res.render("listings/show.ejs", { Listing_data });
-}));
-
-
-// --- EDIT ROUTE ---
-// GET /listings/:id/edit -> edit form dikhao (pehle se bhara hua)
-app.get("/listings/:id/edit", wrapAsync(async (req, res) => {
-    const { id } = req.params;
-
-    // Purani values form mein dikhane ke liye pehle fetch karo
-    const edit_listing = await Listing.findById(id);
-
-    res.render("listings/edit.ejs", { edit_listing });
-     
-}));
-
-
-// --- UPDATE ROUTE ---
-// PUT /listings/:id -> edited data save karo
-// validateListing lagaya — PUT mein bhi req.body aata hai
-// IMPORTANT: URL consistent rakha /listings/:id
-// (pehle /edit_listings/:id tha jo galat tha)
-app.put("/listings/:id", validateListing, wrapAsync(async (req, res) => {
-    const { id } = req.params;
-
-    // findByIdAndUpdate: id se dhundo aur nayi values se update karo
-    // req.body.new_edit_listing mein form ka updated data hoga
-    // { new: true } = updated document return karo (purana nahi)
-    await Listing.findByIdAndUpdate(
-        id,
-        req.body.new_edit_listing,
-        { new: true }
-    );
-
-    // Update ke baad us listing ka show page dikhao
-    res.redirect(`/listings/${id}`);
-}));
-
-
-// --- DELETE ROUTE ---
-// DELETE /listings/:id -> listing delete karo
-// validateListing nahi lagaya — delete mein body validate nahi karni
-app.delete("/listings/:id", wrapAsync(async (req, res) => {
-    const { id } = req.params;
-
-    // Database se permanently delete karo
-    await Listing.findByIdAndDelete(id);
-
-    // Delete ke baad saari listings pe wapas jao
-    res.redirect("/listings");
-}));
-
 
 // -----------------------------------------------
 // STEP 7: 404 Handler

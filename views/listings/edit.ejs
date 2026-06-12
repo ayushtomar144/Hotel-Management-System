@@ -12,7 +12,7 @@ novalidate class="needs-validation">
 
         <input 
         type="text"
-        name="new_edit_listing[title]"
+        name="listing[title]"
         value="<%= edit_listing.title %>"
         class="form-control"
         required
@@ -26,7 +26,7 @@ novalidate class="needs-validation">
         <label class="form-label">Description</label>
 
         <textarea
-        name="new_edit_listing[description]"  required
+        name="listing[description]"  required
         class="form-control"><%= edit_listing.description %></textarea>
         <div class="valid-feedback">Added Description</div>
     </div>
@@ -37,7 +37,7 @@ novalidate class="needs-validation">
 
         <input
         type="text"
-        name="new_edit_listing[image]"
+        name="listing[image]"
         value="<%= typeof edit_listing.image === 'string' ? edit_listing.image : edit_listing.image.url %>"
         class="form-control"
          required>
@@ -50,7 +50,7 @@ novalidate class="needs-validation">
 
         <input
         type="number"
-        name="new_edit_listing[price]"
+        name="listing[price]"
         value="<%= edit_listing.price %>"
         class="form-control"
          required>
@@ -59,12 +59,23 @@ novalidate class="needs-validation">
     </div>
 
     <div class="mb-3">
+          <label class="form-label">Location</label>
+
+        <input
+        type="text"
+        name="listing[location]"
+        value="<%= edit_listing.location %>"
+        class="form-control"
+         required>
+    </div>
+
+    <div class="mb-3">
 
         <label class="form-label">Country</label>
 
         <input
         type="text"
-        name="new_edit_listing[country]"
+        name="listing[country]"
         value="<%= edit_listing.country %>"
         class="form-control"
          required>
